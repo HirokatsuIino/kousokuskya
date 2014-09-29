@@ -13,6 +13,8 @@ public class CsvRead {
 //            FileReader fr = new FileReader("C:\\USDJPYpro5.csv");
             BufferedReader br = new BufferedReader(fr);
 
+
+            //ファイル種別ごとに処理を分ける
             //読み込んだファイルを１行ずつ処理する
             String line;
             StringTokenizer token;
