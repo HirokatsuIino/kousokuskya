@@ -7,52 +7,16 @@ import java.io.FileNotFoundException;
 
 public class DataRead {
 
-    public static void main(String args[]) {
-
-        //注文取消通知ファイルを読み込む
-        try {
-              FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
-              System.out.println("ファイルは存在します");
-
-            BufferedReader br = new BufferedReader(fr_a);
-
-            //ファイル種別ごとに処理を分ける
-            //読み込んだファイルを１行ずつ処理する
-            String line;
-            StringTokenizer token;
-            while ((line = br.readLine()) != null) {
-                //区切り文字","で分割する
-                token = new StringTokenizer(line, ",");
-
-                //分割した文字を画面出力する
-                while (token.hasMoreTokens()) {
-                    System.out.println(token.nextToken());
-
-                    //文字列検索と抜出関数へ
-                    DataRead(line) ;
-
-                }
-                System.out.println("**********");
-            }
-
-            //終了処理
-            br.close();
-        }catch(FileNotFoundException e){
-            System.out.printf("ファイルが開けません。","+",e);
-        } catch (IOException ex) {
-            //例外発生時処理
-            ex.printStackTrace();
-            System.out.printf("ファイルが開けません。","+",ex);
-        }
-
-    }
 
 
-	private static void DataRead(String line) {
+
+    @SuppressWarnings("null")
+	public static void main(String args[]) {
+
 
     	//項目の読み込みと比較
     	//メール内容の：の左側のみを読み込む　表示する。
-    	String sDataItem[]={
+    	String sDataItemOrder1[]={
 					    	"[注文内容]",
 					    	"注文パターン",
 					    	"日付",
@@ -75,25 +39,70 @@ public class DataRead {
 					    	"有効期限2"
 					    	};
 
-    	String sOrderItem="[注文内容]";
 
 		String s4 = "：";
 		int record=0;
-//    	while(line != null){
-			//文字列完全一致
-//    		if(sOrderItem.equals(line)) {
-			//文字列の一部一致
-    			//メール内容の：う含む項目があれり、：の左側と一致してれば、右側を抜出し、別の配列に格納する。
+		int iLineLength=0;
+		int iTargetItem=0;
+
+		String[] strLine ;//指定文字で分割した文字を入れる
+
+    	//注文取消通知ファイルを読み込む
+        try {
+              FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
+              System.out.println("ファイルは存在します");
+
+            BufferedReader br = new BufferedReader(fr_a);
+
+            //ファイル種別ごとに処理を分ける
+            //読み込んだファイルを１行ずつ処理する
+            String line;
+//            StringTokenizer token;
+            int index;
+//        	String strItemLeftKoumoku[] = null;
+        	int iItemLeftKoumokuIndex=0;
+//        	String strItemRightKoumoku[] = null;
+        	int iItemRightKoumokuIndex=0;
+
+        	String[] strItemLeftKoumoku; // 型宣言
+        	strItemLeftKoumoku = new String[100]; // 要素数の確定
+        	String[] strItemRightKoumoku; // 型宣言
+        	strItemRightKoumoku = new String[100]; // 要素数の確定
+
+            while ((line = br.readLine()) != null) {
+            	//文字列の一部一致
+    			//メール内容の：を含む項目があれり、：の左側と一致してれば、右側を抜出し、別の配列に格納する。
     			if(line.matches(".*" + s4 + ".*")){
         		    System.out.printf("文字列一部一致です。");
-//    			if(sDataItem[record].matches(".*" + s4 + ".*")){
-        			int flg_nmaches = 1;// 部分一致です
+        			// 指定した文字より後ろの文字取り出し
+        		    index = line.indexOf("：");
+
+        		    //項目の取り出し
+        		    strItemLeftKoumoku[iItemLeftKoumokuIndex] = line.substring(0, index);
+        		    System.out.println("取り出し文字列->" + strItemLeftKoumoku[iItemLeftKoumokuIndex]);
+        		    //アイテムの取り出し
+        		    strItemRightKoumoku[iItemRightKoumokuIndex] = line.substring(index+1);
+        		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
+
+        		    iItemLeftKoumokuIndex++;
+        		    iItemRightKoumokuIndex++;
+
+
     			}
-    			else {
-    			    int flg_Unmaches = 1;// 部分一致ではありません
-    		    }
-//    		}
-     		record++;
-	}
+    		    iItemLeftKoumokuIndex++;
+    		    iItemRightKoumokuIndex++;
+            }
+
+            //終了処理
+            br.close();
+        } catch (FileNotFoundException e){
+            System.out.printf("ファイルが開けません。","+",e);
+        } catch (IOException ex) {
+            //例外発生時処理
+            ex.printStackTrace();
+            System.out.printf("ファイルが開けません。","+",ex);
+        }
+
+    }
 }
 
