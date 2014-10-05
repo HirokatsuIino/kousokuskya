@@ -1,10 +1,18 @@
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.util.StringTokenizer;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
+import sun.org.mozilla.javascript.internal.WrapFactory;
+
+
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import com.sun.rowset.internal.Row;
 public class DataRead {
 
 
@@ -84,6 +92,28 @@ public class DataRead {
         		    strItemRightKoumoku[iItemRightKoumokuIndex] = line.substring(index+1);
         		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
 
+
+        		    try{
+        		        File file = new File("C:\\temp\\test2.txt");
+
+//        		        if (checkBeforeWritefile(file)){
+        		          FileWriter filewriter = new FileWriter(file , true);
+
+//        		          filewriter.write("こんにちは¥r¥n");
+//        		          filewriter.write("お元気ですか¥r¥n");
+
+        		          filewriter.write(strItemLeftKoumoku[iItemLeftKoumokuIndex]);
+        		          filewriter.write( strItemRightKoumoku[iItemRightKoumokuIndex]);
+        		          filewriter.write("\r\n");
+
+        		          filewriter.close();
+//        		        }else{
+//        		          System.out.println("ファイルに書き込めません");
+//        		        }
+        		      }catch(IOException e){
+        		        System.out.println(e);
+        		      }
+
         		    iItemLeftKoumokuIndex++;
         		    iItemRightKoumokuIndex++;
 
@@ -102,7 +132,21 @@ public class DataRead {
             ex.printStackTrace();
             System.out.printf("ファイルが開けません。","+",ex);
         }
-
     }
 }
 
+/**
+ * エクセルファイルを書き込みます。
+ * @param <Sheet>
+ */
+
+
+//private static boolean checkBeforeWritefile(File file){
+//  if (file.exists()){
+//    if (file.isFile() && file.canWrite()){
+//      return true;
+//    }
+//  }
+//
+//  return false;
+//}
