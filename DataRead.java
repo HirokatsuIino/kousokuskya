@@ -118,65 +118,28 @@ public class DataRead {
         final HSSFWorkbook workbook = new HSSFWorkbook();
 
         int cnt = 0;
-
+        int sheetNo = 1;
         // シートの作成
-        for (int sheetNo = 0; sheetNo < 10; sheetNo++) {
-            final HSSFSheet worksheet = workbook.createSheet();
-            // シート名に日本語を使う場合は明示的にUTF-16を指定する必要あり。
-            workbook.setSheetName(sheetNo,
-                    "シート" + sheetNo, HSSFWorkbook.ENCODING_UTF_16);
+        final HSSFSheet worksheet = workbook.createSheet();
+        // シート名に日本語を使う場合は明示的にUTF-16を指定する必要あり。
+//        workbook.setSheetName(sheetNo, "シート" + sheetNo, HSSFWorkbook.ENCODING_UTF_16);
 
-            // 行 x 列で埋める
-            String val;
-            for (int rowIdx = 0; rowIdx < 10; rowIdx++) {
-                final HSSFRow row = worksheet.createRow(rowIdx);
-                for (short colIdx = 0; colIdx < 20; colIdx++) {
-                    final HSSFCell cell = row.createCell(colIdx);
-                    // 日本語をセットするためにはUTF-16を指定する必要あり
-                    cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-                    val = String.format(strPaseteItemLeft);
-                    // 引数の型を認識してセルに値をセットする。
-                    cell.setCellValue(val);
-
-                    cnt += 1;
-
-                    // スタイルの設定
-                    final HSSFCellStyle style = workbook.createCellStyle();
-                    final HSSFDataFormat format = workbook.createDataFormat();
-                    style.setDataFormat(format.getFormat("@")); // セルの書式を文字列にする
-
-                    // 罫線の作成
-                    if (cnt % 3 == 0) {
-                        style.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
-                        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-                    }
-
-                    // セルのフォントの色、サイズの指定
-                    if (cnt % 7 == 0) {
-                        final HSSFFont font = workbook.createFont();
-                        font.setColor(HSSFColor.RED.index);
-                        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                        font.setFontHeight((short)(16 * 20)); // 16pt (1/20pt単位)
-                        style.setFont(font);
-                    }
-                    else {
-                        // セルの水平・垂直揃えを中央にする。
-                        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-                        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-                    }
-
-                    // スタイルのセット
-                    cell.setCellStyle(style);
-                }
-            }
-
-            // カラム幅の設定
+        // 行 x 列で埋める
+        String val;
+        int rowIdx = 0;
+//        for (int rowIdx = 0; rowIdx < 10; rowIdx++) {
+            final HSSFRow row = worksheet.createRow(rowIdx);
             for (short colIdx = 0; colIdx < 20; colIdx++) {
-                // 15文字幅。デフォルトフォントの「0」に対する1/256を単位とする。
-                final short width = 256 * 15;
-                worksheet.setColumnWidth(colIdx, width);
+                final HSSFCell cell = row.createCell(colIdx);
+                // 日本語をセットするためにはUTF-16を指定する必要あり
+                cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+                val = String.format(strPaseteItemLeft);
+                // 引数の型を認識してセルに値をセットする。
+                cell.setCellValue(val);
+
+                cnt += 1;
             }
-        }
+//      }
 
         // ファイルへ保存
         final OutputStream os = new BufferedOutputStream(
