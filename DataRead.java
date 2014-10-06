@@ -71,7 +71,6 @@ public class DataRead {
 		String[] strLine ;//指定文字で分割した文字を入れる
 
     	//注文取消通知ファイルを読み込む
-//        try {
               FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
               System.out.println("ファイルは存在します");
 
@@ -80,11 +79,8 @@ public class DataRead {
             //ファイル種別ごとに処理を分ける
             //読み込んだファイルを１行ずつ処理する
             String line;
-//            StringTokenizer token;
             int index;
-//        	String strItemLeftKoumoku[] = null;
         	int iItemLeftKoumokuIndex=0;
-//        	String strItemRightKoumoku[] = null;
         	int iItemRightKoumokuIndex=0;
 
         	String[] strItemLeftKoumoku; // 型宣言
@@ -108,26 +104,6 @@ public class DataRead {
         		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
 
         		    bFlg =  ExcelWriteTest(strItemLeftKoumoku[iItemLeftKoumokuIndex]);
-//        		    try{
-//        		        File file = new File("C:\\temp\\test2.txt");
-//
-////        		        if (checkBeforeWritefile(file)){
-//        		          FileWriter filewriter = new FileWriter(file , true);
-//
-////        		          filewriter.write("こんにちは¥r¥n");
-////        		          filewriter.write("お元気ですか¥r¥n");
-//
-//        		          filewriter.write(strItemLeftKoumoku[iItemLeftKoumokuIndex]);
-//        		          filewriter.write( strItemRightKoumoku[iItemRightKoumokuIndex]);
-//        		          filewriter.write("\r\n");
-//
-//        		          filewriter.close();
-////        		        }else{
-////        		          System.out.println("ファイルに書き込めません");
-////        		        }
-//        		      }catch(IOException e){
-//        		        System.out.println(e);
-//        		      }
     			}
     		    iItemLeftKoumokuIndex++;
     		    iItemRightKoumokuIndex++;
@@ -135,15 +111,6 @@ public class DataRead {
 
             //終了処理
             br.close();
-//        } catch (FileNotFoundException e){
-//            System.out.printf("ファイルが開けません。","+",e);
-//        } catch (IOException ex) {
-//            //例外発生時処理
-//            ex.printStackTrace();
-//            System.out.printf("ファイルが開けません。","+",ex);
-//        }
-
-
     }
 
    private static  boolean ExcelWriteTest(String strPaseteItemLeft) throws FileNotFoundException  {
@@ -160,13 +127,14 @@ public class DataRead {
                     "シート" + sheetNo, HSSFWorkbook.ENCODING_UTF_16);
 
             // 行 x 列で埋める
+            String val;
             for (int rowIdx = 0; rowIdx < 10; rowIdx++) {
                 final HSSFRow row = worksheet.createRow(rowIdx);
                 for (short colIdx = 0; colIdx < 20; colIdx++) {
                     final HSSFCell cell = row.createCell(colIdx);
                     // 日本語をセットするためにはUTF-16を指定する必要あり
                     cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-                    final String val = String.format(strPaseteItemLeft);
+                    val = String.format(strPaseteItemLeft);
                     // 引数の型を認識してセルに値をセットする。
                     cell.setCellValue(val);
 
