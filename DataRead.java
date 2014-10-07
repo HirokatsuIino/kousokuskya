@@ -1,25 +1,39 @@
-import java.io.FileReader;
 import java.io.BufferedReader;
-import java.util.StringTokenizer;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.apache.poi.hssf.model.Workbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+
+
+
+
+
+
+import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 
-import sun.org.mozilla.javascript.internal.WrapFactory;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.util.HSSFColor;
 
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
-import com.sun.rowset.internal.Row;
+
 public class DataRead {
 
 
 
 
-    @SuppressWarnings("null")
-	public static void main(String args[]) {
+	public static void main(String args[]) throws IOException {
 
 
     	//項目の読み込みと比較
@@ -52,24 +66,20 @@ public class DataRead {
 		int record=0;
 		int iLineLength=0;
 		int iTargetItem=0;
+		boolean  bFlg=true;
 
 		String[] strLine ;//指定文字で分割した文字を入れる
 
     	//注文取消通知ファイルを読み込む
-        try {
               FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
-              System.out.println("ファイルは存在します");
 
             BufferedReader br = new BufferedReader(fr_a);
 
             //ファイル種別ごとに処理を分ける
             //読み込んだファイルを１行ずつ処理する
             String line;
-//            StringTokenizer token;
             int index;
-//        	String strItemLeftKoumoku[] = null;
         	int iItemLeftKoumokuIndex=0;
-//        	String strItemRightKoumoku[] = null;
         	int iItemRightKoumokuIndex=0;
 
         	String[] strItemLeftKoumoku; // 型宣言
@@ -93,60 +103,72 @@ public class DataRead {
         		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
 
 
+        		    /*　追記書き込み項目をテキストファイルへ書き込む
+					*
+        		     * */
         		    try{
         		        File file = new File("C:\\temp\\test2.txt");
+        		        FileWriter filewriter = new FileWriter(file , true);
 
-//        		        if (checkBeforeWritefile(file)){
-        		          FileWriter filewriter = new FileWriter(file , true);
-
-//        		          filewriter.write("こんにちは¥r¥n");
-//        		          filewriter.write("お元気ですか¥r¥n");
-
-        		          filewriter.write(strItemLeftKoumoku[iItemLeftKoumokuIndex]);
-        		          filewriter.write( strItemRightKoumoku[iItemRightKoumokuIndex]);
-        		          filewriter.write("\r\n");
+        		        filewriter.write("'");
+        		          filewriter.write(strItemRightKoumoku[iItemRightKoumokuIndex]);
+          		        filewriter.write("'");
+           		        filewriter.write(",");
+//     		           filewriter.write("\r\n");
 
         		          filewriter.close();
-//        		        }else{
-//        		          System.out.println("ファイルに書き込めません");
-//        		        }
         		      }catch(IOException e){
         		        System.out.println(e);
         		      }
-
-        		    iItemLeftKoumokuIndex++;
-        		    iItemRightKoumokuIndex++;
-
-
     			}
-    		    iItemLeftKoumokuIndex++;
-    		    iItemRightKoumokuIndex++;
             }
+	}
 
-            //終了処理
-            br.close();
-        } catch (FileNotFoundException e){
-            System.out.printf("ファイルが開けません。","+",e);
-        } catch (IOException ex) {
-            //例外発生時処理
-            ex.printStackTrace();
-            System.out.printf("ファイルが開けません。","+",ex);
+
+   private static  boolean ExcelWriteTest(String strItemLeftKoumoku) throws FileNotFoundException  {
+        // 新規にワークブックをメモリ上に作成
+        final HSSFWorkbook workbook = new HSSFWorkbook();
+
+        int cnt = 0;
+        int sheetNo = 1;
+        // シートの作成
+        final HSSFSheet worksheet = workbook.createSheet();
+        // シート名に日本語を使う場合は明示的にUTF-16を指定する必要あり。
+//        workbook.setSheetName(sheetNo, "シート" + sheetNo, HSSFWorkbook.ENCODING_UTF_16);
+
+        // 行 x 列で埋める
+        String val;
+        int rowIdx = 0;
+        short colIdx = 0;
+//        for (int rowIdx = 0; rowIdx < 10; rowIdx++) {
+            final HSSFRow row = worksheet.createRow(rowIdx);
+//            for (short colIdx = 0; colIdx < 20; colIdx++) {
+                final HSSFCell cell = row.createCell(colIdx);
+                // 日本語をセットするためにはUTF-16を指定する必要あり
+                cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+                val = strItemLeftKoumoku;
+                // 引数の型を認識してセルに値をセットする。
+                cell.setCellValue(val);
+
+        // ファイルへ保存
+        final OutputStream os = new BufferedOutputStream(
+                new FileOutputStream("テスト1.xls"));
+        try {
+            workbook.write(os);
+        } catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+        finally {
+            try {
+				os.close();
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
         }
+		return(true);
     }
+
+
 }
-
-/**
- * エクセルファイルを書き込みます。
- * @param <Sheet>
- */
-
-
-//private static boolean checkBeforeWritefile(File file){
-//  if (file.exists()){
-//    if (file.isFile() && file.canWrite()){
-//      return true;
-//    }
-//  }
-//
-//  return false;
-//}
