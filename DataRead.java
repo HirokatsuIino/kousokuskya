@@ -108,12 +108,12 @@ public class DataRead {
     		    iItemLeftKoumokuIndex++;
     		    iItemRightKoumokuIndex++;
             }
-
+//		    bFlg =  ExcelWriteTest(strItemLeftKoumoku);
             //終了処理
             br.close();
     }
 
-   private static  boolean ExcelWriteTest(String strPaseteItemLeft) throws FileNotFoundException  {
+   private static  boolean ExcelWriteTest(String strItemLeftKoumoku) throws FileNotFoundException  {
         // 新規にワークブックをメモリ上に作成
         final HSSFWorkbook workbook = new HSSFWorkbook();
 
@@ -127,18 +127,20 @@ public class DataRead {
         // 行 x 列で埋める
         String val;
         int rowIdx = 0;
+        short colIdx = 0;
 //        for (int rowIdx = 0; rowIdx < 10; rowIdx++) {
             final HSSFRow row = worksheet.createRow(rowIdx);
-            for (short colIdx = 0; colIdx < 20; colIdx++) {
+//            for (short colIdx = 0; colIdx < 20; colIdx++) {
                 final HSSFCell cell = row.createCell(colIdx);
                 // 日本語をセットするためにはUTF-16を指定する必要あり
                 cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-                val = String.format(strPaseteItemLeft);
+//                val = String.format(val, strItemLeftKoumoku);
+                val = strItemLeftKoumoku;
                 // 引数の型を認識してセルに値をセットする。
                 cell.setCellValue(val);
 
-                cnt += 1;
-            }
+//                cnt += 1;
+//            }
 //      }
 
         // ファイルへ保存
