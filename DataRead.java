@@ -115,7 +115,7 @@ public class DataRead {
 //        		        filewriter.write("'");
         		          filewriter.write(strItemRightKoumoku[iItemRightKoumokuIndex]);
 //          		        filewriter.write("'");
-//           		        filewriter.write(",");
+           		        filewriter.write(",");
 //     		           filewriter.write("\r\n");
 
         		          filewriter.close();
@@ -123,10 +123,9 @@ public class DataRead {
         		        System.out.println(e);
         		      }
     			}
-    			//*テキストファイルから読み込む
-    			FileTextRead();
-
             }
+            //*テキストファイルから読み込む
+			FileTextRead();
 
 		    /*　追記型で、テキストファイルからエクセルファイルへ書き込む
 			*
@@ -184,13 +183,20 @@ public class DataRead {
         short colIdx = 0;
 //        for (int rowIdx = 0; rowIdx < 10; rowIdx++) {
             final HSSFRow row = worksheet.createRow(rowIdx);
-//            for (short colIdx = 0; colIdx < 20; colIdx++) {
-                final HSSFCell cell = row.createCell(colIdx);
+
+            val = strItemLeftKoumoku;
+           //カンマ区切りにする。
+            String[] strs = strItemLeftKoumoku.split(",");
+            for (colIdx = 0; colIdx < strs.length; colIdx++ ) {
                 // 日本語をセットするためにはUTF-16を指定する必要あり
+                final HSSFCell cell = row.createCell(colIdx);
                 cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-                val = strItemLeftKoumoku;
+
+                cell.setCellValue(strs[colIdx]);
+                System.out.println(String.format("分割後 %d 個目の文字列 -> %s", colIdx+1, strs[colIdx]));
                 // 引数の型を認識してセルに値をセットする。
-                cell.setCellValue(val);
+
+            }
 
         // ファイルへ保存
         final OutputStream os = new BufferedOutputStream(
