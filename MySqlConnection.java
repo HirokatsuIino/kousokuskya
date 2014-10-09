@@ -33,19 +33,11 @@ public class  MySqlConnection {
             // データベースへ接続
             con = DriverManager.getConnection("jdbc:mysql://localhost:3307/mysql","root","root");
 
-            // name,bloodType,ageのデータを検索するSQL文を作成
-//            String sql = "select name,bloodType,age from Sample_Table";
-
-
-//            String sql = "select address_id from address;";
-//            String sql = "select database();";
-
+            // SQL文を作成(テスト)
             String sql ="SELECT" +
             " address_id  " +
           " FROM " +
             " sakila.address" ;
-
-
 
             // ステートメントオブジェクトを生成
             ps = con.prepareStatement(sql);
@@ -55,18 +47,10 @@ public class  MySqlConnection {
 
             // 検索された行数分ループ
             while(rs.next()) {
-
                 // nameデータを取得
                 String name = rs.getString("address_id");
-//                // bloodTypeデータを取得
-//                String bloodType = rs.getString("bloodType");
-//                // ageデータを取得
-//                String age = rs.getString("age");
-
                 // データの表示
                 System.out.println("address_id;"+" "+name);
-//                System.out.println("bloodType;"+" "+bloodType );
-//                System.out.println("age;"+" "+age );
             }
 
         } catch (SQLException e) {
@@ -75,12 +59,10 @@ public class  MySqlConnection {
             e.printStackTrace();
         } finally {
             try {
-
                 // close処理
                 if(ps != null){
                     ps.close();
                 }
-
                 // close処理
                 if(con != null){
                     con.close();
