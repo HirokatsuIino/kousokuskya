@@ -1,9 +1,11 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.apache.poi.hssf.model.Workbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -110,10 +112,10 @@ public class DataRead {
         		        File file = new File("C:\\temp\\test2.txt");
         		        FileWriter filewriter = new FileWriter(file , true);
 
-        		        filewriter.write("'");
+//        		        filewriter.write("'");
         		          filewriter.write(strItemRightKoumoku[iItemRightKoumokuIndex]);
-          		        filewriter.write("'");
-           		        filewriter.write(",");
+//          		        filewriter.write("'");
+//           		        filewriter.write(",");
 //     		           filewriter.write("\r\n");
 
         		          filewriter.close();
@@ -121,9 +123,49 @@ public class DataRead {
         		        System.out.println(e);
         		      }
     			}
-            }
-	}
+    			//*テキストファイルから読み込む
+    			FileTextRead();
 
+            }
+
+		    /*　追記型で、テキストファイルからエクセルファイルへ書き込む
+			*
+		     * */
+            //メールの内容をテキストファイルへ書き込む　OK
+
+            //読み込んだ内容をエクセルファイルへ追記型で書き込む
+
+	}
+	/*テキストファイルから読み込む
+	 *
+	 * */
+    private static void FileTextRead() {
+	    // 読み込むファイルの名前
+	    String inputFileName = "C:\\temp\\test2.txt";
+	    // ファイルオブジェクトの生成
+	    File inputFile = new File(inputFileName);
+	    try {
+	      // 入力ストリームの生成（文字コード指定）
+	      FileInputStream fis = new FileInputStream(inputFile);
+	      InputStreamReader isr = new InputStreamReader(fis,"UTF-8");
+	      BufferedReader br = new BufferedReader(isr);
+	      // テキストファイルからの読み込み
+	      String msg;
+	    System.out.println("テキストファイルからの読み込み文字列\r\n");
+	      while ( ( msg = br.readLine()) != null ) {
+	        System.out.println(msg);
+
+	        //テキストファイルから読み込んだら、エクセルへそのまま書き込む
+	        ExcelWriteTest(msg);
+	      }
+
+	      // 後始末
+	      br.close();
+	      // エラーがあった場合は、スタックトレースを出力
+	    } catch(Exception e) {
+	      e.printStackTrace();
+	    }
+}
 
    private static  boolean ExcelWriteTest(String strItemLeftKoumoku) throws FileNotFoundException  {
         // 新規にワークブックをメモリ上に作成
@@ -133,8 +175,8 @@ public class DataRead {
         int sheetNo = 1;
         // シートの作成
         final HSSFSheet worksheet = workbook.createSheet();
-        // シート名に日本語を使う場合は明示的にUTF-16を指定する必要あり。
-//        workbook.setSheetName(sheetNo, "シート" + sheetNo, HSSFWorkbook.ENCODING_UTF_16);
+        // シート名に日本語を使う場合は明示的にUTF-8
+//        workbook.setSheetName(sheetNo, "シート" + sheetNo, HSSFWorkbook.ENCODING_UTF_8);
 
         // 行 x 列で埋める
         String val;
@@ -152,7 +194,7 @@ public class DataRead {
 
         // ファイルへ保存
         final OutputStream os = new BufferedOutputStream(
-                new FileOutputStream("テスト1.xls"));
+                new FileOutputStream("テスト2.xls"));
         try {
             workbook.write(os);
         } catch (IOException e) {
