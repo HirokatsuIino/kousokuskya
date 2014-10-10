@@ -18,6 +18,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -50,9 +52,51 @@ public class DataRead {
 
 		String[] strLine ;//指定文字で分割した文字を入れる
 
-    	//注文取消通知ファイルを読み込む
-              FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
 
+		//指定デレクトリからファイル名取得
+			String path = "D:\\filelist";
+		    File dir = new File(path);
+		    File[] files = dir.listFiles();
+		    for (int i = 0; i < files.length; i++) {
+		        File file = files[i];
+		        System.out.println((i + 1) + ":    " + file);
+
+
+
+              //ファイル名検索に正規表現を使用
+//              String str = "注文訂正通知";
+              String regex = "注文受付通知|注文取消通知|注文訂正通知|約定通知";
+              Pattern p = Pattern.compile(regex);
+              String strflies = file.toString();
+              Matcher m = p.matcher(strflies);
+
+              if (m.find()){
+                System.out.println("マッチしました");
+//                //もし、マッチしたのが、注文受付なら
+//                int strMacheUketukeFlg = 1; //注文受付
+//              //もし、マッチしたのが、注文訂正なら
+//                int strMacheTeiseiFlg = 2; //注文訂正
+
+                String matchstr = m.group();
+                System.out.println(matchstr + "の部分にマッチしました");
+                if (matchstr.equals("注文受付通知")) {
+                    System.out.println("注文受付通知です。");
+                }
+                else if(matchstr.equals("注文取消通知")) {
+                    System.out.println("注文取消通知です。");
+                }
+                else if(matchstr.equals("注文訂正通知")) {
+                    System.out.println("注文訂正通知です。");
+                }
+                else if(matchstr.equals("約定通知")) {
+                    System.out.println("約定通知です。");
+                }
+              }else{
+                System.out.println("マッチしません");
+              }
+		    }
+	    	//注文取消通知ファイルを読み込む
+            FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
             BufferedReader br = new BufferedReader(fr_a);
 
             //ファイル種別ごとに処理を分ける
