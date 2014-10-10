@@ -10,15 +10,14 @@ import java.io.InputStreamReader;
 import org.apache.poi.hssf.model.Workbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-
-
-
-
-
-
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -29,6 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.util.HSSFColor;
 
 
+import src.MailItem;
 
 public class DataRead {
 
@@ -38,31 +38,9 @@ public class DataRead {
 	public static void main(String args[]) throws IOException {
 
 
-    	//項目の読み込みと比較
+//    	//項目の読み込みと比較
     	//メール内容の：の左側のみを読み込む　表示する。
-    	String sDataItemOrder1[]={
-					    	"[注文内容]",
-					    	"注文パターン",
-					    	"日付",
-					    	"時刻",
-					    	"通貨ペア",
-					    	"（ＯＣＯ第1注文）",
-					    	"注文番号1",
-					    	"新規決済区分",
-			    	"売買区分1",
-					    	"注文数量1",
-					    	"注文タイプ1",
-					    	"注文価格1",
-					    	"有効期限1",
-					    	"（ＯＣＯ第2注文）",
-					    	"新規決済区分",
-					    	"売買区分2",
-					    	"注文数量2",
-					    	"注文タイプ2",
-					    	"注文価格2",
-					    	"有効期限2"
-					    	};
-
+		MailItem();
 
 		String s4 = "：";
 		int record=0;
@@ -83,7 +61,7 @@ public class DataRead {
             int index;
         	int iItemLeftKoumokuIndex=0;
         	int iItemRightKoumokuIndex=0;
-
+        	int iConnectFlg; //データベースアクセス結果値格納用フラグ
         	String[] strItemLeftKoumoku; // 型宣言
         	strItemLeftKoumoku = new String[100]; // 要素数の確定
         	String[] strItemRightKoumoku; // 型宣言
@@ -104,6 +82,10 @@ public class DataRead {
         		    strItemRightKoumoku[iItemRightKoumokuIndex] = line.substring(index+1);
         		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
 
+
+        		    /* DBへ接続し書き込み実施
+        		     * */
+        		    iConnectFlg = MySqlConnection();
 
         		    /*　追記書き込み項目をテキストファイルへ書き込む
 					*
@@ -135,7 +117,123 @@ public class DataRead {
             //読み込んだ内容をエクセルファイルへ追記型で書き込む
 
 	}
-	/*テキストファイルから読み込む
+	private static void MailItem() {
+	    //注文受付通知
+		String sTyumonUketuke[]=
+		{
+			"注文パターン",
+			"日付",
+			"時刻",
+			"通貨ペア",
+			"注文番号1",
+			"新規決済区分1",
+			"売買区分1",
+			"注文数量1",
+			"注文タイプ1",
+			"注文価格1",
+			"有効期限1",
+			"注文番号2",
+			"新規決済区分2",
+			"売買区分2",
+			"注文数量2",
+			"注文タイプ2",
+			"注文価格2",
+			"有効期限2",
+			"注文番号",
+			"日付",
+			"注文数量",
+			"注文価格"
+		};
+
+
+	    //	注文訂正通知
+		String sTyumonTeisei[]=
+		{
+				"注文パターン",
+				"日付",
+				"時刻",
+				"通貨ペア",
+				"注文番号1",
+				"新規決済区分1",
+				"売買区分1",
+				"注文数量1",
+				"注文タイプ1",
+				"注文価格1",
+				"有効期限1",
+				"注文番号2",
+				"新規決済区分2",
+				"売買区分2",
+				"注文数量2",
+				"注文タイプ2",
+				"注文価格2",
+				"有効期限2",
+				"注文番号",
+				"日付",
+				"注文数量",
+				"注文価格",
+				"注文価格1",
+				"有効期限1",
+				"注文価格2",
+				"有効期限2"
+				};
+
+	    //注文取消通知
+		String sTyumonTrikeshi[]=
+		{
+		"注文パターン",
+		"日付",
+		"時刻",
+		"通貨ペア",
+		"注文番号1",
+		"新規決済区分1",
+		"売買区分1",
+		"注文数量1",
+		"注文タイプ1",
+		"注文価格1",
+		"有効期限1",
+		"注文番号2",
+		"新規決済区分2",
+		"売買区分2",
+		"注文数量2",
+		"注文タイプ2",
+		"注文価格2",
+		"有効期限2"
+		};
+
+	    //約定通知
+		String sDataItemOrder1[]={
+				"注文番号",
+				"日付",
+				"時刻",
+				"新規決済区分",
+				"通貨ペア",
+				"注文数量",
+				"約定価格",
+				"注文パターン",
+				"日付",
+				"時刻",
+				"通貨ペア",
+				"注文番号1",
+				"新規決済区分1",
+				"売買区分1",
+				"注文数量1",
+				"注文タイプ1",
+				"注文価格1",
+				"有効期限1",
+				"注文番号2",
+				"新規決済区分2",
+				"売買区分2",
+				"注文数量2",
+				"注文タイプ2",
+				"注文価格2",
+				"有効期限2",
+				"注文番号",
+				"日付",
+				"注文数量",
+				"注文価格"
+					    	};
+	    }
+	/*メールをテキストファイルへ貼り付けた、ファイルから読み込む
 	 *
 	 * */
     private static void FileTextRead() {
@@ -218,5 +316,61 @@ public class DataRead {
 		return(true);
     }
 
+
+   /* DBへ接続し書き込み関数
+    * */
+   private static  int MySqlConnection() {
+	        Connection con = null;
+
+	        PreparedStatement ps = null;
+
+	        try {
+
+	            // ドライバクラスをロード
+	            Class.forName("com.mysql.jdbc.Driver");
+
+	            // データベースへ接続
+	            con = DriverManager.getConnection("jdbc:mysql://localhost:3307/mysql","root","root");
+
+	            // SQL文を作成(テスト)
+	            String sql ="SELECT" +
+	            " address_id  " +
+	          " FROM " +
+	            " sakila.address" ;
+
+	            // ステートメントオブジェクトを生成
+	            ps = con.prepareStatement(sql);
+
+	            // クエリーを実行して結果セットを取得
+	            ResultSet rs = ps.executeQuery();
+
+	            // 検索された行数分ループ
+	            while(rs.next()) {
+	                // nameデータを取得
+	                String name = rs.getString("address_id");
+	                // データの表示
+	                System.out.println("address_id;"+" "+name);
+	            }
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } catch (ClassNotFoundException e) {
+	            e.printStackTrace();
+	        } finally {
+	            try {
+	                // close処理
+	                if(ps != null){
+	                    ps.close();
+	                }
+	                // close処理
+	                if(con != null){
+	                    con.close();
+	                }
+	            } catch(SQLException e){
+	                e.printStackTrace();
+	            }
+	        }
+	        return(0);
+	    }
 
 }
