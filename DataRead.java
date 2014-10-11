@@ -42,7 +42,7 @@ public class DataRead {
 
 //    	//項目の読み込みと比較
     	//メール内容の：の左側のみを読み込む　表示する。
-		MailItem();
+//		MailItem(0);
 
 		String s4 = "：";
 		int record=0;
@@ -61,6 +61,7 @@ public class DataRead {
             int iMacheTeiseiFlg;     //注文訂正
             int iMacheTorikeshi;         //注文取消
             int iMacheYakujyoFlg;      //約定
+            int iMacheFlg = 0;
             for (int i = 0; i < files.length; i++) {
 		        File file = files[i];
 		        System.out.println((i + 1) + ":    " + file);
@@ -76,44 +77,37 @@ public class DataRead {
 
               if (m.find()){
                 System.out.println("マッチしました");
-
-
-
                 String matchstr = m.group();
                 System.out.println(matchstr + "の部分にマッチしました");
                 if (matchstr.equals("注文受付通知")) {
                     System.out.println("注文受付通知です。");
                     //もし、マッチしたのが、注文受付なら
-                    iMacheUketukeFlg = 1; //注文受付
+                    iMacheFlg = 1; //注文受付iMacheUketukeFlg
                 }
                 else if(matchstr.equals("注文取消通知")) {
                     System.out.println("注文取消通知です。");
                     //もし、マッチしたのが、注文取消通知なら
-                    iMacheTorikeshi = 2; //注文取消通知
+                    iMacheFlg = 2; //注文取消通知iMacheTorikeshi
                 }
                 else if(matchstr.equals("注文訂正通知")) {
                     System.out.println("注文訂正通知です。");
                     //もし、マッチしたのが、注文訂正通知なら
-                    iMacheTeiseiFlg = 3; //注文訂正通知
+                    iMacheFlg = 3; //注文訂正通知iMacheTeiseiFlg
                 }
                 else if(matchstr.equals("約定通知")) {
                     System.out.println("約定通知です。");
                     //もし、マッチしたのが、約定通知なら
-                    iMacheYakujyoFlg = 4; //約定通知
+                    iMacheFlg = 4; //約定通知iMacheYakujyoFlg
                 }
               }else{
                 System.out.println("マッチしません");
               }
+  	    	//ファイルを読み込む
               String strFiles = files[i].toString();
               FileReader fr_a = new FileReader(strFiles);
               BufferedReader br = new BufferedReader(fr_a);
 
-	    	//注文取消通知ファイルを読み込む
-//            FileReader fr_a = new FileReader(files.toString());
-
-//            FileReader fr_a = new FileReader(strFiles);
-//            BufferedReader br = new BufferedReader(fr_a);
-
+              //値取り出し
             //ファイル種別ごとに処理を分ける
             //読み込んだファイルを１行ずつ処理する
             String line;
@@ -142,32 +136,14 @@ public class DataRead {
         		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
 
 
-        		    /* DBへ接続し書き込み実施
-        		     * */
-        		    iConnectFlg = MySqlConnection();
-
-        		    /*　追記書き込み項目をテキストファイルへ書き込む
-					*
-        		     * */
-//        		    try{
-//        		        File file = new File("C:\\temp\\test2.txt");
-//        		        FileWriter filewriter = new FileWriter(file , true);
-//
-////        		        filewriter.write("'");
-//        		          filewriter.write(strItemRightKoumoku[iItemRightKoumokuIndex]);
-////          		        filewriter.write("'");
-//           		        filewriter.write(",");
-////     		           filewriter.write("\r\n");
-//
-//        		          filewriter.close();
-//        		      }catch(IOException e){
-//        		        System.out.println(e);
-//        		      }
     			}
             }
             //*テキストファイルから読み込む
-			FileTextRead();
+            MailItem(iMacheFlg);
 
+		    /* DBへ接続し書き込み実施
+		     * */
+		    iConnectFlg = MySqlConnection(iMacheFlg , strItemLeftKoumoku , strItemRightKoumoku);
 		    /*　追記型で、テキストファイルからエクセルファイルへ書き込む
 			*
 		     * */
@@ -176,7 +152,7 @@ public class DataRead {
             //読み込んだ内容をエクセルファイルへ追記型で書き込む
             }
 	}
-	private static void MailItem() {
+	private static void MailItem(int iMacheFlg) {
 	    //注文受付通知
 		String sTyumonUketuke[]=
 		{
@@ -378,11 +354,11 @@ public class DataRead {
 
    /* DBへ接続し書き込み関数
     * */
-   private static  int MySqlConnection() {
+   private static  int MySqlConnection(int iFlgMache , String[] strItemLeftKoumoku, String[] strItemRightKoumoku) {
 	        Connection con = null;
 
 	        PreparedStatement ps = null;
-
+	        String sql;
 	        try {
 
 	            // ドライバクラスをロード
@@ -391,11 +367,57 @@ public class DataRead {
 	            // データベースへ接続
 	            con = DriverManager.getConnection("jdbc:mysql://localhost:3307/mysql","root","root");
 
+	            //SQL文作成前の各項目へ値セット
+	            //注文受付時のSQL
+
+	            //多次元配列化が必要？？
+	           //[][]//[]注文別フラグ格納、[]値格納
+	            if(iFlgMache == 1){
+	           sql = " INSERT INTO trademail VALUES" +
+	        		   "( "+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+//○
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   "" +","+
+	        		   ""+")";
+	        		   ;
+	            }
+
+
 	            // SQL文を作成(テスト)
-	            String sql ="SELECT" +
-	            " address_id  " +
-	          " FROM " +
-	            " sakila.address" ;
+//	             sql ="SELECT" +
+//	            " address_id  " +
+//	          " FROM " +
+//	            " sakila.address" ;
 
 	            // ステートメントオブジェクトを生成
 	            ps = con.prepareStatement(sql);
