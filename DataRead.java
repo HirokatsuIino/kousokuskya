@@ -57,7 +57,11 @@ public class DataRead {
 			String path = "D:\\filelist";
 		    File dir = new File(path);
 		    File[] files = dir.listFiles();
-		    for (int i = 0; i < files.length; i++) {
+            int iMacheUketukeFlg; //注文受付
+            int iMacheTeiseiFlg;     //注文訂正
+            int iMacheTorikeshi;         //注文取消
+            int iMacheYakujyoFlg;      //約定
+            for (int i = 0; i < files.length; i++) {
 		        File file = files[i];
 		        System.out.println((i + 1) + ":    " + file);
 
@@ -72,32 +76,43 @@ public class DataRead {
 
               if (m.find()){
                 System.out.println("マッチしました");
-//                //もし、マッチしたのが、注文受付なら
-//                int strMacheUketukeFlg = 1; //注文受付
-//              //もし、マッチしたのが、注文訂正なら
-//                int strMacheTeiseiFlg = 2; //注文訂正
+
+
 
                 String matchstr = m.group();
                 System.out.println(matchstr + "の部分にマッチしました");
                 if (matchstr.equals("注文受付通知")) {
                     System.out.println("注文受付通知です。");
+                    //もし、マッチしたのが、注文受付なら
+                    iMacheUketukeFlg = 1; //注文受付
                 }
                 else if(matchstr.equals("注文取消通知")) {
                     System.out.println("注文取消通知です。");
+                    //もし、マッチしたのが、注文取消通知なら
+                    iMacheTorikeshi = 2; //注文取消通知
                 }
                 else if(matchstr.equals("注文訂正通知")) {
                     System.out.println("注文訂正通知です。");
+                    //もし、マッチしたのが、注文訂正通知なら
+                    iMacheTeiseiFlg = 3; //注文訂正通知
                 }
                 else if(matchstr.equals("約定通知")) {
                     System.out.println("約定通知です。");
+                    //もし、マッチしたのが、約定通知なら
+                    iMacheYakujyoFlg = 4; //約定通知
                 }
               }else{
                 System.out.println("マッチしません");
               }
-		    }
+              String strFiles = files[i].toString();
+              FileReader fr_a = new FileReader(strFiles);
+              BufferedReader br = new BufferedReader(fr_a);
+
 	    	//注文取消通知ファイルを読み込む
-            FileReader fr_a = new FileReader("D:\\注文取消通知.txt");
-            BufferedReader br = new BufferedReader(fr_a);
+//            FileReader fr_a = new FileReader(files.toString());
+
+//            FileReader fr_a = new FileReader(strFiles);
+//            BufferedReader br = new BufferedReader(fr_a);
 
             //ファイル種別ごとに処理を分ける
             //読み込んだファイルを１行ずつ処理する
@@ -134,20 +149,20 @@ public class DataRead {
         		    /*　追記書き込み項目をテキストファイルへ書き込む
 					*
         		     * */
-        		    try{
-        		        File file = new File("C:\\temp\\test2.txt");
-        		        FileWriter filewriter = new FileWriter(file , true);
-
-//        		        filewriter.write("'");
-        		          filewriter.write(strItemRightKoumoku[iItemRightKoumokuIndex]);
-//          		        filewriter.write("'");
-           		        filewriter.write(",");
-//     		           filewriter.write("\r\n");
-
-        		          filewriter.close();
-        		      }catch(IOException e){
-        		        System.out.println(e);
-        		      }
+//        		    try{
+//        		        File file = new File("C:\\temp\\test2.txt");
+//        		        FileWriter filewriter = new FileWriter(file , true);
+//
+////        		        filewriter.write("'");
+//        		          filewriter.write(strItemRightKoumoku[iItemRightKoumokuIndex]);
+////          		        filewriter.write("'");
+//           		        filewriter.write(",");
+////     		           filewriter.write("\r\n");
+//
+//        		          filewriter.close();
+//        		      }catch(IOException e){
+//        		        System.out.println(e);
+//        		      }
     			}
             }
             //*テキストファイルから読み込む
@@ -159,7 +174,7 @@ public class DataRead {
             //メールの内容をテキストファイルへ書き込む　OK
 
             //読み込んだ内容をエクセルファイルへ追記型で書き込む
-
+            }
 	}
 	private static void MailItem() {
 	    //注文受付通知
