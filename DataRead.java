@@ -128,18 +128,26 @@ public class DataRead {
         			// 指定した文字より後ろの文字取り出し
         		    index = line.indexOf("：");
 
-        		    //項目の取り出し
+                    //*テキストファイルから読み込む
+                    MailItem(iMacheFlg);
+//                    String strkoumoku;
+//                    int ikoumoku;
+//                    //項目設定
+//        		    if(line.substring(0, index).equals(strkoumoku[ikoumoku++])){
+//
+//        		    }
+                    //項目の取り出し
         		    strItemLeftKoumoku[iItemLeftKoumokuIndex] = line.substring(0, index);
-        		    System.out.println("取り出し文字列->" + strItemLeftKoumoku[iItemLeftKoumokuIndex]);
+        		    System.out.println("取り出し文字列->" + strItemLeftKoumoku[iItemLeftKoumokuIndex++]);
         		    //アイテムの取り出し
         		    strItemRightKoumoku[iItemRightKoumokuIndex] = line.substring(index+1);
-        		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex]);
+        		    System.out.println("取り出し文字列->" +  strItemRightKoumoku[iItemRightKoumokuIndex++]);
 
 
     			}
             }
-            //*テキストファイルから読み込む
-            MailItem(iMacheFlg);
+//            //*テキストファイルから読み込む
+//            MailItem(iMacheFlg);
 
 		    /* DBへ接続し書き込み実施
 		     * */
@@ -354,11 +362,11 @@ public class DataRead {
 
    /* DBへ接続し書き込み関数
     * */
-   private static  int MySqlConnection(int iFlgMache , String[] strItemLeftKoumoku, String[] strItemRightKoumoku) {
+   private static  int MySqlConnection(int iFlgMache , String[] strLeftKoumoku, String[] strRightKoumoku) {
 	        Connection con = null;
 
 	        PreparedStatement ps = null;
-	        String sql;
+	        String sql=null;
 	        try {
 
 	            // ドライバクラスをロード
@@ -372,7 +380,11 @@ public class DataRead {
 
 	            //多次元配列化が必要？？
 	           //[][]//[]注文別フラグ格納、[]値格納
-	            if(iFlgMache == 1){
+
+	            //日付型HHHH/MM/DD⇒HHHH-MM-DD型へ置換し、' 'で囲む
+	            strRightKoumoku[1] =   strRightKoumoku[1].replaceAll("/","-");
+	            //時間型' 'で囲む
+	            if(iFlgMache == 2){
 	           sql = " INSERT INTO trademail VALUES" +
 	        		   "( "+
 	        		   "" +","+
@@ -382,28 +394,29 @@ public class DataRead {
 	        		   "" +","+
 	        		   "" +","+
 	        		   "" +","+
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
-	        		   "" +","+//○
+	        		   "" +","+
+	        		   strRightKoumoku[0] +","+//○
+	        		   " ' "+ strRightKoumoku[1]  + " ' " +","+//○
+	        		  " ' "+  strRightKoumoku[2]  + " ' " +","+//○
+	        		   strRightKoumoku[3] +","+//○
+	        		   strRightKoumoku[4] +","+//○
+	        		   strRightKoumoku[5] +","+//○
+	        		   strRightKoumoku[6] +","+//○
+	        		   strRightKoumoku[7] +","+//○
+	        		   strRightKoumoku[8] +","+//○
+	        		   strRightKoumoku[9] +","+//○
+	        		   strRightKoumoku[10] +","+//○
+	        		   strRightKoumoku[11] +","+//○
+	        		   strRightKoumoku[12] +","+//○
+	        		   strRightKoumoku[13] +","+//○
+	        		   strRightKoumoku[14] +","+//○
+	        		   strRightKoumoku[15] +","+//○
+	        		   strRightKoumoku[16] +","+//○
+	        		   strRightKoumoku[17] +","+//○
+	        		   strRightKoumoku[18] +","+//○
+	        		   strRightKoumoku[19] +","+//○
+	        		   strRightKoumoku[20] +","+//○
+	        		   strRightKoumoku[21] +","+//○
 	        		   "" +","+
 	        		   "" +","+
 	        		   "" +","+
@@ -411,8 +424,53 @@ public class DataRead {
 	        		   ""+")";
 	        		   ;
 	            }
-
-
+	            if(iFlgMache == 2){
+//	           sql = " INSERT INTO trademail VALUES" +
+//	        		   "( "+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "strRightKoumoku[0]" +","+//○
+//	        		   "strRightKoumoku[1]" +","+//○
+//	        		   "strRightKoumoku[2]" +","+//○
+//	        		   "strRightKoumoku[3]" +","+//○
+//	        		   "strRightKoumoku[4]" +","+//○
+//	        		   "strRightKoumoku[5]" +","+//○
+//	        		   "strRightKoumoku[6]" +","+//○
+//	        		   "strRightKoumoku[7]" +","+//○
+//	        		   "strRightKoumoku[8]" +","+//○
+//	        		   "strRightKoumoku[9]" +","+//○
+//	        		   "strRightKoumoku[10]" +","+//○
+//	        		   "strRightKoumoku[11]" +","+//○
+//	        		   "strRightKoumoku[12]" +","+//○
+//	        		   "strRightKoumoku[13]" +","+//○
+//	        		   "strRightKoumoku[14]" +","+//○
+//	        		   "strRightKoumoku[15]" +","+//○
+//	        		   "strRightKoumoku[16]" +","+//○
+//	        		   "strRightKoumoku[17]" +","+//○
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   "" +","+
+//	        		   ""+")";
+//	            }
+//	            	 sql ="INSERT INTO trademail VALUES('','','','','','','',''," +
+//		            	 		strRightKoumoku[0] +","strRightKoumoku[1]","strRightKoumoku[2]","strRightKoumoku[3], +
+//		            	 		strRightKoumoku[4]","strRightKoumoku[5]","strRightKoumoku[6]","strRightKoumoku[7], +
+//		            	 		strRightKoumoku[8]","strRightKoumoku[9]","strRightKoumoku[10]","strRightKoumoku[11], +
+//		            	 		strRightKoumoku[12]","strRightKoumoku[13]","strRightKoumoku[14],strRightKoumoku[15], +
+//		            	 		strRightKoumoku[16]","strRightKoumoku[17], +
+//		            	 		" '','','','','','','','');";
+	            }
 	            // SQL文を作成(テスト)
 //	             sql ="SELECT" +
 //	            " address_id  " +
@@ -423,15 +481,16 @@ public class DataRead {
 	            ps = con.prepareStatement(sql);
 
 	            // クエリーを実行して結果セットを取得
-	            ResultSet rs = ps.executeQuery();
+//	            ResultSet rs = ps.executeQuery();
+	            int iRs = ps.executeUpdate();
 
 	            // 検索された行数分ループ
-	            while(rs.next()) {
-	                // nameデータを取得
-	                String name = rs.getString("address_id");
-	                // データの表示
-	                System.out.println("address_id;"+" "+name);
-	            }
+//	            while(rs.next()) {
+//	                // nameデータを取得
+//	                String name = rs.getString("address_id");
+//	                // データの表示
+//	                System.out.println("address_id;"+" "+name);
+//	            }
 
 	        } catch (SQLException e) {
 	            e.printStackTrace();
