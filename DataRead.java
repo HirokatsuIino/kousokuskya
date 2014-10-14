@@ -384,44 +384,46 @@ public class DataRead {
 	            //日付型HHHH/MM/DD⇒HHHH-MM-DD型へ置換し、' 'で囲む
 	            strRightKoumoku[1] =   strRightKoumoku[1].replaceAll("/","-");
 	            //時間型' 'で囲む
+	            //float型の数量等についている","を.に置換
+	            strRightKoumoku[7] = strRightKoumoku[7].replace(",", "");
+	            strRightKoumoku[14] = strRightKoumoku[14].replace(",", "");
 	            if(iFlgMache == 2){
 	           sql = " INSERT INTO trademail VALUES" +
 	        		   "( "+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   strRightKoumoku[0] +","+//○
-	        		   " ' "+ strRightKoumoku[1]  + " ' " +","+//○
-	        		  " ' "+  strRightKoumoku[2]  + " ' " +","+//○
-	        		   strRightKoumoku[3] +","+//○
-	        		   strRightKoumoku[4] +","+//○
-	        		   strRightKoumoku[5] +","+//○
-	        		   strRightKoumoku[6] +","+//○
-	        		   strRightKoumoku[7] +","+//○
-	        		   strRightKoumoku[8] +","+//○
-	        		   strRightKoumoku[9] +","+//○
-	        		   strRightKoumoku[10] +","+//○
-	        		   strRightKoumoku[11] +","+//○
-	        		   strRightKoumoku[12] +","+//○
-	        		   strRightKoumoku[13] +","+//○
-	        		   strRightKoumoku[14] +","+//○
-	        		   strRightKoumoku[15] +","+//○
-	        		   strRightKoumoku[16] +","+//○
-	        		   strRightKoumoku[17] +","+//○
-	        		   strRightKoumoku[18] +","+//○
-	        		   strRightKoumoku[19] +","+//○
-	        		   strRightKoumoku[20] +","+//○
-	        		   strRightKoumoku[21] +","+//○
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   "" +","+
-	        		   ""+")";
+	        		   iFlgMache +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   " '"+ strRightKoumoku[0]  + "' " +","+//○
+	        		   " '"+ strRightKoumoku[1]  + "' " +","+//○
+	        		  " '"+  strRightKoumoku[2]  + "' " +","+//○
+	        		  " '"+ strRightKoumoku[3]  + "' " +","+//○
+	        		  " '"+ strRightKoumoku[4]  + "' " +","+//○
+	        		  " '"+ strRightKoumoku[5]  + "' " +","+//○
+	        		  " '"+ strRightKoumoku[6]  + "' " +","+//○
+	        		  strRightKoumoku[7]  + ","+//○
+	        		  " '"+ strRightKoumoku[8]  + "' "  +","+//○
+	        		  strRightKoumoku[9]  +","+//○
+	        		  " '"+ strRightKoumoku[10]  + "' "  +","+//○
+	        		  " '"+ strRightKoumoku[11]  + "' "  +","+//○
+	        		  " '"+ strRightKoumoku[12]  + "' "  +","+//○
+	        		  " '"+ strRightKoumoku[13]  + "' "  +","+//○
+	        		 strRightKoumoku[14] +","+//○
+	        		  " '"+ strRightKoumoku[15]  + "' "  +","+//○
+	        		 strRightKoumoku[16] +","+//○
+	        		  " '"+ strRightKoumoku[17]  + "' "  +","+//○
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +","+
+	        		   "null" +")";
 	        		   ;
 	            }
 	            if(iFlgMache == 2){
