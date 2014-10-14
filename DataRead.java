@@ -384,9 +384,11 @@ public class DataRead {
 	            //日付型HHHH/MM/DD⇒HHHH-MM-DD型へ置換し、' 'で囲む
 	            strRightKoumoku[1] =   strRightKoumoku[1].replaceAll("/","-");
 	            //時間型' 'で囲む
-	            //float型の数量等についている","を.に置換
+	            //float型の数量等についている","を取る
+	            //エクセルファイルへエクスポートする際に、付け直す。
 	            strRightKoumoku[7] = strRightKoumoku[7].replace(",", "");
 	            strRightKoumoku[14] = strRightKoumoku[14].replace(",", "");
+	            //注文取消しSQL
 	            if(iFlgMache == 2){
 	           sql = " INSERT INTO trademail VALUES" +
 	        		   "( "+
